@@ -31,11 +31,11 @@ body {
 
 
 .mbx_altara {
-	background-color: #c6301c;
+	background-color: #d85d1a;
 }
 
 .mbx_user {
-	background-color:#444444;
+	background-color:#292929;
 }
 
 /* Formerly  
@@ -58,7 +58,7 @@ body {
 */
 
 .site-bg {
-	background-color: rgb(21, 21, 21);
+	background-color: rgba(21, 21, 21, 0.321);
 }
 
 .top-g {
@@ -101,7 +101,7 @@ body {
    }
    
    .card-info {
-	--color: #181818;
+	--color: #18181865;
 	background: var(--color);
 	color: var(--color);
 	display: flex;

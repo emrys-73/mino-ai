@@ -12,7 +12,7 @@
             <div class="hero-content text-center text-neutral-content">
             <div class="max-w-2xl">
                 <div class="relative">
-                    <h1 class="mb-0 text-7xl font-bold text-white drop-shadow-lg">One AI to enhance it all</h1>
+                    <h1 class="mb-0 text-7xl font-bold text-white drop-shadow-lg">Mino X Astralta</h1>
                     
                 
                     <!-- <p class="mb-5  text-white font-light drop-shadow-lg">tailored AI assistant for your business</p>  -->

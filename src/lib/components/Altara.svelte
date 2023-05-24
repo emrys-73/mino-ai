@@ -75,10 +75,10 @@
 <div class="relative">
     <div class="card">
 		
-        <div class="h-[500px] bg-zinc-900  bg-opacity-70 rounded-xl p-4 overflow-y-auto flex flex-col gap-4">
+        <div class="h-[600px] bg-zinc-900  bg-opacity-20 rounded-xl p-4 overflow-y-auto flex flex-col gap-4 min-w-[800px]">
             <div class="flex flex-col gap-2 text-left ">
 				
-                <ChatMessage type="assistant" message="Hi, want me to help you with coffee or ice?" />
+                <ChatMessage type="assistant" message="Hi, what can I do for you today?" />
                 {#each chatMessages as message}
                     <ChatMessage type={message.role} message={message.content} />
                 {/each}
@@ -97,7 +97,7 @@
     </div>
 </div>
 <form
-		class="flex max-w-2xl rounded-md gap-4 bg-transparent p-4"
+		class="flex max-w-3xl min-w-[700px] rounded-md gap-4 bg-transparent p-4"
 		on:submit|preventDefault={() => handleSubmit()}
 	>
 		<input placeholder="Write a message" type="text" class="input input-bordered w-full min-w-[338px] bg-zinc-900 placeholder:italic" bind:value={query} />
