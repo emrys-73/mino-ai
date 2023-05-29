@@ -129,4 +129,3 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .svelte-kit
-src/routes/api/chat/+server.ts
