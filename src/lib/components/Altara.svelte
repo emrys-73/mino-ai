@@ -18,10 +18,9 @@
 	const MESSAGE_LIMIT = 30;
 	let messageCount = 0;
 
-
 	const handleSubmit = async () => {
 		if (messageCount >= MESSAGE_LIMIT - 1) {
-		return;
+			return;
 		}
 
 		messageCount++;
@@ -56,10 +55,22 @@
 				if (delta.content) {
 					answer = (answer ?? '') + delta.content
 				}
-			} catch (err) {
-				handleError(err)
+			} catch (err: any) {
+				if (err.message === 'Timeout') {
+					chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we\'re at capacity right now. Please try again later.' }]
+				} else {
+					handleError(err)
+					chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we ran into a problem. Please try again later.' }]
+				}
 			}
 		})
+
+		eventSource.addEventListener('httpError', (e: any) => {
+			if (e.data.status === 500) {
+				console.log('Sorry, boy, error');
+			}
+		})
+
 		eventSource.stream()
 		scrollToBottom()
 	}
@@ -71,6 +82,7 @@
 		console.error(err)
 	}
 </script>
+
 
 <div class="relative">
     <div class="card">
