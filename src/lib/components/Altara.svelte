@@ -91,7 +91,8 @@
 	function handleError<T>(err: T) {
 		loading = false
 		query = ''
-		answer = 'Sorry, something went wrong'
+		answer = 'Sorry, I am having too many messsages right now. Please try again later'
+
 		console.error(err)
 	}
 </script>
