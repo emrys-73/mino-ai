@@ -59,8 +59,8 @@
 				if (err.message === 'Timeout') {
 					chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we\'re at capacity right now. Please try again later.' }]
 				} else {
-					handleError(err)
 					chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we ran into a problem. Please try again later.' }]
+					handleError(err)
 				}
 			}
 		})
