@@ -53,10 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			throw new Error('Query flagged by openai')
 		}
 
-		
-
-		const prompt =
-			perso.text;
+		const prompt = perso.text;
 		tokenCount += getTokens(prompt)
 
 		if (tokenCount >= 3000) {
@@ -75,15 +72,23 @@ export const POST: RequestHandler = async ({ request }) => {
 			stream: true
 		}
 
+		const controller = new AbortController();
+		const { signal } = controller;
+		const timeout = setTimeout(() => {
+			controller.abort();
+		}, 20000); // Set timeout to 20 seconds (20000 milliseconds)
+
 		const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
 			headers: {
 				Authorization: `Bearer ${OPENAI_KEY}`,
 				'Content-Type': 'application/json'
 			},
 			method: 'POST',
-			body: JSON.stringify(chatRequestOpts)
-			
+			body: JSON.stringify(chatRequestOpts),
+			signal // Pass the signal to the fetch request
 		})
+
+		clearTimeout(timeout); // Clear the timeout if the request completes within the timeout duration
 
 		if (!chatResponse.ok) {
 			const err = await chatResponse.json()
@@ -97,6 +102,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		})
 	} catch (err) {
 		console.error(err)
-		return json({ error: 'There was en error in your request', key: OPENAI_KEY }, { status: 500 })
+		return json({ error: 'There was an error in your request', key: OPENAI_KEY }, { status: 500 })
+	
 	}
 }
