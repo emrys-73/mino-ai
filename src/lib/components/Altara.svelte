@@ -28,57 +28,70 @@
 		loading = true
 		chatMessages = [...chatMessages, { role: 'user', content: query }]
 
-		const eventSource = new SSE('/api/chat', {
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			payload: JSON.stringify({ messages: chatMessages })
-		})
+		const controller = new AbortController();
+		const { signal } = controller;
+		const timeout = setTimeout(() => {
+			controller.abort();
+		}, 20000); // Set timeout to 20 seconds (20000 milliseconds)
 
-		query = ''
+		try {
+			const eventSource = new SSE('/api/chat', {
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				payload: JSON.stringify({ messages: chatMessages }),
+				// signal // Pass the signal to the SSE constructor
+			})
 
-		eventSource.addEventListener('error', handleError)
+			query = ''
 
-		eventSource.addEventListener('message', (e) => {
+			eventSource.addEventListener('error', handleError)
+
+			eventSource.addEventListener('message', (e) => {
+				scrollToBottom();
+				try {
+					loading = false
+					if (e.data === '[DONE]') {
+						chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
+						answer = ''
+						return
+					}
+
+					const completionResponse = JSON.parse(e.data)
+					const [{ delta }] = completionResponse.choices
+
+					if (delta.content) {
+						answer = (answer ?? '') + delta.content
+					}
+				} catch (err: any) {
+					if (err.message === 'Timeout') {
+						chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we\'re at capacity right now. Please try again later.' }]
+					} else {
+						chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we ran into a problem. Please try again later.' }]
+						handleError(err)
+					}
+				}
+			})
+
+			eventSource.addEventListener('httpError', (e: any) => {
+				if (e.data.status === 500) {
+					console.log('Sorry, we had an error');
+				}
+			})
+
+			eventSource.stream()
 			scrollToBottom()
-			try {
-				loading = false
-				if (e.data === '[DONE]') {
-					chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
-					answer = ''
-					return
-				}
-
-				const completionResponse = JSON.parse(e.data)
-				const [{ delta }] = completionResponse.choices
-
-				if (delta.content) {
-					answer = (answer ?? '') + delta.content
-				}
-			} catch (err: any) {
-				if (err.message === 'Timeout') {
-					chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we\'re at capacity right now. Please try again later.' }]
-				} else {
-					chatMessages = [...chatMessages, { role: 'assistant', content: 'Sorry, we ran into a problem. Please try again later.' }]
-					handleError(err)
-				}
-			}
-		})
-
-		eventSource.addEventListener('httpError', (e: any) => {
-			if (e.data.status === 500) {
-				console.log('Sorry, boy, error');
-			}
-		})
-
-		eventSource.stream()
-		scrollToBottom()
+		} catch (err) {
+			handleError(err);
+		} finally {
+			clearTimeout(timeout); // Clear the timeout if the request completes within the timeout duration
+		}
 	}
 
 	function handleError<T>(err: T) {
 		loading = false
 		query = ''
-		answer = ''
+		answer = 'Sorry, something went wrong'
 		console.error(err)
 	}
 </script>
