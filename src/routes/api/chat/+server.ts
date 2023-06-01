@@ -1,4 +1,3 @@
-// import { OPENAI_KEY } from '$env/static/private'
 const OPENAI_KEY = process.env.OPENAI_KEY;
 import type { CreateChatCompletionRequest, ChatCompletionRequestMessage } from 'openai'
 import type { RequestHandler } from './$types'
