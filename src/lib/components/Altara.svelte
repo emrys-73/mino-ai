@@ -35,6 +35,7 @@
 		}, 20000); // Set timeout to 20 seconds (20000 milliseconds)
 
 		try {
+			answer = ''
 			const eventSource = new SSE('/api/chat', {
 				headers: {
 					'Content-Type': 'application/json'
@@ -92,7 +93,6 @@
 		loading = false
 		query = ''
 		answer = 'Sorry, I am having too many messsages right now. Please try again later'
-
 		console.error(err)
 	}
 </script>
